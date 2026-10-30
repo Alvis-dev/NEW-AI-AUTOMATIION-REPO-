@@ -1,0 +1,796 @@
+{
+  "name": "ADVANCED AI JOB SCRAPPER",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "46e3dec3-83f3-41f1-b050-ae1051f7db83",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "RUN",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2512,
+        368
+      ],
+      "id": "92e8ee9b-3279-4848-9e8b-eb2a3b4bddd3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "Datasets",
+        "datasetId": "={{ $json.defaultDatasetId }}",
+        "options": {}
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        -1952,
+        448
+      ],
+      "id": "601587d9-f824-4fe8-85d4-ffa22b2cb8fa",
+      "name": "Get dataset items",
+      "credentials": {
+        "apifyApi": {
+          "id": "5LMHcpZKqoO3xow2",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here is the job listing details:\nTitle: {{ $json.title }}\nDescription: {{ $json.descriptionHtml }}\nCompany name: {{ $json.companyName }}\nLocation: {{ $json.location.city }}\nSalary: {{ $json.salary }}\nJobtype: {{ $json.jobType[0] }}\nHere is the candidate’s skill set:\n\nSAMPLE RESUME\n\nOlalekan Adeeko\nNigeria | Email: [placeholder] | Phone: [placeholder]\nLinkedIn: [placeholder] | Portfolio or GitHub: [optional]\n\nEducation\nMaster’s Degree in Information Technology\nInstitution: [placeholder]\nGraduated: [placeholder]\n\nProfessional Profile\nMicrosoft MVP\nData Analyst\nAI Educator and AI Automation Specialist\n\nRelevant Expertise and Focus Areas\nAI automation systems and intelligent workflow design\nData analytics, reporting, and insight generation\nAI adoption for education and business productivity\nAutomation using AI agents, integrations, and process optimisation\nTraining, capacity building, and technical communication\n\nExperience\nAI Automation and Data Analytics Specialist\nMultiple organisations and consulting engagements | Nigeria and Remote\n\nDesigned and deployed AI automation workflows to streamline operations, reduce manual tasks, and improve turnaround time across business and educational environments.\n\nBuilt data pipelines, dashboards, and analytical models that convert raw data into clear insights for decision makers.\n\nIntegrated AI tools into existing systems to support reporting, customer engagement, learning platforms, and internal operations.\n\nDelivered structured training sessions and workshops on AI, automation, and data literacy for professionals, educators, and organisations.\n\nProvided strategic guidance on responsible AI use, system design, and scalable automation practices.\n\nOverall Fit for the Role\nOlalekan’s profile aligns strongly with roles focused on AI automation, data driven systems, and intelligent process improvement. His combination of technical depth, real world implementation experience, and ability to teach and operationalise AI makes him well suited for organisations seeking practical and scalable AI solutions.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an intelligent evaluation agent. Your task is to assess how closely a job listing matches a candidate’s skill set and return a score out of 10 along with key job details.\n\nScoring rules:\n\nResume fit\nAward 4 points if the candidate is an excellent or near perfect fit for the role.\nAward 2 points if the candidate mostly matches the role requirements.\nAward 0 points if the fit is weak or unclear.\n\nCompensation\nAward 3 points if the role pays at least 25 USD per hour, 4,000 USD per month, or 50,040 USD per year.\nAward 0 points if compensation is below this threshold or not specified.\n\nRemote status\nAward 1 point if the role is remote and isRemote equals true.\nAward 0 points otherwise.\n\nBenefits\nAward 1 point if the company offers any benefits.\nAward 0 points if no benefits are listed.\n\nEmployment type\nAward 1 point if the role is full time.\nAward 0 points if the role is contract or part time.\n\nScoring logic\nAdd all awarded points to produce a final score between 0 and 10.\n\nExamples\nIf the job mostly fits the candidate, pays above the salary threshold, is remote, but offers no benefits and is not full time, the total score is 6.\nIf the job fits perfectly, pays below the salary threshold, is not remote, offers some benefits, and is not full time, the total score is 5.\n\nOutput format\nReturn ONLY valid JSON in the following structure with no markdown surrounding text or explanation outside the JSON block:\n\nYou are an intelligent evaluation agent. Your task is to assess how closely a job listing matches a candidate’s skill set and return a score out of 10 along with key job details.\n\nScoring rules:\n\nResume fit\nAward 4 points if the candidate is an excellent or near perfect fit for the role.\nAward 2 points if the candidate mostly matches the role requirements.\nAward 0 points if the fit is weak or unclear.\n\nCompensation\nAward 3 points if the role pays at least 25 USD per hour, 4,000 USD per month, or 50,040 USD per year.\nAward 0 points if compensation is below this threshold or not specified.\n\nRemote status\nAward 1 point if the role is remote and isRemote equals true.\nAward 0 points otherwise.\n\nBenefits\nAward 1 point if the company offers any benefits.\nAward 0 points if no benefits are listed.\n\nEmployment type\nAward 1 point if the role is full time.\nAward 0 points if the role is contract or part time.\n\nScoring logic\nAdd all awarded points to produce a final score between 0 and 10.\n\nExamples\nIf the job mostly fits the candidate, pays above the salary threshold, is remote, but offers no benefits and is not full time, the total score is 6.\nIf the job fits perfectly, pays below the salary threshold, is not remote, offers some benefits, and is not full time, the total score is 5.\n\nOutput format\nReturn ONLY valid JSON in the following structure with no markdown surrounding text or explanation outside the JSON block:\n\n{\n  \"title\": \"{{ $('Get dataset items').item.json.title }}\",\n  \"score\": 0,\n  \"salary\": \"{{ $('Get dataset items').item.json.salary.salaryMin }}\",\n  \"summary\": \"Concise 2-3 sentence AI summary of the core responsibilities and tech stack.\",\n  \"jobUrl\": \"{{ $('Get dataset items').item.json.jobUrl }}\",\n  \"applyUrl\": \"{{ $('Get dataset items').item.json.applyUrl }}\",\n  \"reasoning\": \"Brief explanation showing how each criterion contributed to the total score.\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1728,
+        448
+      ],
+      "id": "72b7ce14-eed0-4fbb-bdd3-2bad0396a8b3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\": \"{{ $('Get dataset items').item.json.title }}\",\n  \"score\": 0,\n  \"salary\": \"{{ $('Get dataset items').item.json.salary.salaryMin }}\",\n  \"summary\": \"Concise 2-3 sentence AI summary of the core responsibilities and tech stack.\",\n  \"jobUrl\": \"{{ $('Get dataset items').item.json.jobUrl }}\",\n  \"applyUrl\": \"{{ $('Get dataset items').item.json.applyUrl }}\",\n  \"reasoning\": \"Brief explanation showing how each criterion contributed to the total score.\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1552,
+        656
+      ],
+      "id": "01c40fa5-95a3-42d6-a085-934032b0edd0",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please write a tailored cover letter for Olalekan Adeeko based on the following dynamic job details:\n\nTarget Job Title: {{ $json.output.title }}\nOffered Compensation: {{ $json.output.salary }}\nJob Overview & Tech Stack: {{ $json.output.summary }}\nAI Alignment Fit & Context: {{ $json.output.reasoning }}\n\nEnsure the cover letter specifically addresses the technical requirements outlined in the summary while keeping the total length concise and engaging. Return the response in the required JSON structure.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an expert executive resume strategist and top-tier job application copywriter. Your task is to write a highly compelling, authentic, and tailored cover letter bridging the candidate's background with the provided job opportunity.\n\n### INPUT DATA\n- Job Details: {{ $json.output }}\n- Candidate Profile:\n  - Name: Olalekan Adeeko\n  - Title/Credentials: Microsoft MVP | Data Analyst | AI Educator & AI Automation Specialist\n  - Core Strengths: Designing scalable AI automation workflows (n8n, Make), integrating LLMs/AI agents, building data pipelines & analytics dashboards, RAG systems, process optimization, and technical training.\n\n### WRITING RULES\n1. Natural & Human-Like: Use a warm, professional, and conversational tone. Strictly avoid AI clichés and buzzwords such as \"delve,\" \"testament,\" \"passionate,\" \"spearheaded,\" \"seamless,\" \"game-changer,\" or \"beacon.\"\n2. Hook First Paragraph: Start immediately with a strong opening connecting Olalekan's hands-on experience in AI workflow automation to the target role. DO NOT open with generic phrases like \"I am writing to apply for...\" or \"I am excited to submit my application...\"\n3. Highlight Specific Fit: Map Olalekan's expertise in AI agent orchestration, data pipelines, and automation system design directly to the key requirements mentioned in the job summary and title.\n4. Length & Structure: Keep the letter concise and punchy—between 200 and 275 words across 3 to 4 short paragraphs.\n\n### OUTPUT FORMAT\nReturn strictly valid JSON with no extra text or markdown formatting around the output:\n\n{\n  \"job_title\": \"{{ $json.output.title }}\",\n  \"subject\": \"Application: {{ $json.output.title }} - Olalekan Adeeko\",\n  \"cover_letter\": \"The full cover letter text with double newlines separating paragraphs.\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -960,
+        208
+      ],
+      "id": "c1cc3029-7f22-4dba-8726-cab903719b35",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4b5f517d-1c98-4cd7-bdb3-34712346b88a",
+              "leftValue": "={{ $json.output.score }}",
+              "rightValue": 7,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1360,
+        448
+      ],
+      "id": "235111c4-8c53-40c3-8df1-69901068404c",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1El75_B7RLMqd3nxeTTmmRTVhAyswXHMpp3tQIWmLPF0",
+          "mode": "list",
+          "cachedResultName": "Low Jobs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1El75_B7RLMqd3nxeTTmmRTVhAyswXHMpp3tQIWmLPF0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1El75_B7RLMqd3nxeTTmmRTVhAyswXHMpp3tQIWmLPF0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $json.output.title }}",
+            "Rating ": "={{ $json.output.score }}",
+            "Company name ": "={{ $('Get dataset items').item.json.companyName }}",
+            "Salary ": "={{ $json.output.salary }}",
+            "Job link": "={{ $json.output.jobUrl }}",
+            "Apply link": "={{ $json.output.applyUrl }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company name ",
+              "displayName": "Company name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rating ",
+              "displayName": "Rating ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job link",
+              "displayName": "Job link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Apply link",
+              "displayName": "Apply link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Salary ",
+              "displayName": "Salary ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1136,
+        544
+      ],
+      "id": "5a26e066-d5d6-4ad3-9854-ad24dc867c56",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wfnJVceVNPy8iSbq",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "affiah233@gmail.com",
+        "subject": "JOB ALERT !!!!!",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <style>\n    body { \n      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; \n      background-color: #0f172a; \n      margin: 0; \n      padding: 25px; \n      color: #e2e8f0;\n    }\n    .container { \n      max-width: 600px; \n      background: #1e293b; \n      margin: 0 auto; \n      padding: 28px; \n      border-radius: 12px; \n      border: 1px solid #334155;\n      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5); \n    }\n    .header { \n      background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%); \n      color: #ffffff; \n      padding: 16px; \n      border-radius: 8px; \n      text-align: center; \n      margin-bottom: 24px; \n    }\n    .header h2 { \n      margin: 0; \n      font-size: 18px; \n      font-weight: 700; \n      letter-spacing: 0.5px;\n      text-transform: uppercase;\n    }\n    .job-title { \n      font-size: 20px; \n      color: #f8fafc; \n      margin-bottom: 20px; \n      font-weight: 700; \n      line-height: 1.4;\n      border-left: 4px solid #38bdf8;\n      padding-left: 12px;\n    }\n    .details-table { \n      width: 100%; \n      border-collapse: collapse; \n      margin-bottom: 20px; \n      background: #0f172a;\n      border-radius: 8px;\n      overflow: hidden;\n      border: 1px solid #334155;\n    }\n    .details-table td { \n      padding: 12px 16px; \n      border-bottom: 1px solid #1e293b; \n    }\n    .details-table tr:last-child td {\n      border-bottom: none;\n    }\n    .label { \n      font-weight: 600; \n      color: #94a3b8; \n      width: 35%; \n      font-size: 13px;\n      text-transform: uppercase;\n      letter-spacing: 0.5px;\n    }\n    .value { \n      color: #f1f5f9; \n      font-weight: 500;\n    }\n    .score-badge {\n      background: #064e3b;\n      color: #34d399;\n      padding: 4px 10px;\n      border-radius: 6px;\n      font-weight: 700;\n      border: 1px solid #059669;\n      display: inline-block;\n    }\n    .link-container { \n      margin-top: 24px; \n      padding: 16px; \n      background: #0f172a;\n      border-radius: 8px;\n      border: 1px dashed #475569;\n    }\n    .link-item { \n      margin-bottom: 12px; \n      font-size: 14px; \n    }\n    .link-item:last-child {\n      margin-bottom: 0;\n    }\n    .link-item strong {\n      color: #94a3b8;\n    }\n    .link-item a { \n      color: #38bdf8; \n      text-decoration: none; \n      font-weight: 600; \n      word-break: break-all;\n      font-family: 'Courier New', Courier, monospace;\n    }\n    .link-item a:hover {\n      text-decoration: underline;\n      color: #7dd3fc;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h2>⚡ System Alert // New Job Match</h2>\n    </div>\n    \n    <div class=\"job-title\">\n      {{ $('Get dataset items').item.json.title }}\n    </div>\n\n    <table class=\"details-table\">\n      <tr>\n        <td class=\"label\">⭐ AI Match Score</td>\n        <td class=\"value\">\n          <span class=\"score-badge\">{{ $('AI Agent').item.json.output.score }} / 10</span>\n        </td>\n      </tr>\n      <tr>\n        <td class=\"label\">💰 Salary Range</td>\n        <td class=\"value\">${{ $('Get dataset items').item.json.salary.salaryMin }}</td>\n      </tr>\n    </table>\n\n    <div class=\"link-container\">\n      <div class=\"link-item\">\n        🔗 <strong>Job Specs:</strong> <a href=\"{{ $('Get dataset items').item.json.jobUrl }}\">{{ $('Get dataset items').item.json.jobUrl }}</a>\n      </div>\n      <div class=\"link-item\">\n        🚀 <strong>Apply Portal:</strong> <a href=\"{{ $('Get dataset items').item.json.applyUrl }}\">{{ $('Get dataset items').item.json.applyUrl }}</a>\n      </div>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        464
+      ],
+      "id": "9d4cfd28-eca7-4ff1-baba-cbb36d8b8c81",
+      "name": "Send a message",
+      "webhookId": "22130030-3479-4400-820e-2cd6534de6a6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MqyQr8tLdLdt42Kw",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13tAH6dEWk1-juYRK1KsmaH__fP1mjgKjLvAiezwgz7Y",
+          "mode": "list",
+          "cachedResultName": "AI Job ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13tAH6dEWk1-juYRK1KsmaH__fP1mjgKjLvAiezwgz7Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13tAH6dEWk1-juYRK1KsmaH__fP1mjgKjLvAiezwgz7Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title ": "={{ $('If1').item.json.output.title }}",
+            "Date ": "={{ $('Get dataset items').item.json.datePublished }}",
+            "Rating ": "={{ $('AI Agent').item.json.output.score }}",
+            "Company Name": "={{ $('Get dataset items').item.json.companyName }}",
+            "City": "={{ $('Get dataset items').item.json.location.city }}",
+            "Salary": "={{ $('If1').item.json.output.salary }}",
+            "Remote ": "={{ $('Get dataset items').item.json.location.city }}",
+            "Job link": "={{ $('Get dataset items').item.json.jobUrl }}",
+            "ApplyURL": "={{ $('Get dataset items').item.json.applyUrl }}",
+            " Job desc.": "={{ $('If1').item.json.output.summary }}",
+            "Platform": "INDEED",
+            "Expired": "={{ $('If1').item.json.output.reasoning }}",
+            "Cover Letter": "={{ $json.output.cover_letter }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title ",
+              "displayName": "Title ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Job desc.",
+              "displayName": " Job desc.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Platform",
+              "displayName": "Platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date ",
+              "displayName": "Date ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rating ",
+              "displayName": "Rating ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cover Letter",
+              "displayName": "Cover Letter",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Salary",
+              "displayName": "Salary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "City",
+              "displayName": "City",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expired",
+              "displayName": "Expired",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Remote ",
+              "displayName": "Remote ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job link",
+              "displayName": "Job link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ApplyURL",
+              "displayName": "ApplyURL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -400,
+        256
+      ],
+      "id": "b7793770-1ba6-4f4f-a7a7-ce11b13cb171",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wfnJVceVNPy8iSbq",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=🚨NEW JOB ALERT🚨\n💼Title:{{ $('AI Agent').item.json.output.title }}\n\n⭐ AI Fit Score: {{ $('AI Agent').item.json.output.score }}/10\n💰 Salary:{{ $('AI Agent').item.json.output.salary }}\n\n📝 Description:\n{{ $('AI Agent').item.json.output.summary }}\n\n🔗 <a href=\"{{ $('AI Agent').item.json.output.jobUrl }}\">\nView Job Details</a>\n🚀 <a href=\"{{ $('AI Agent').item.json.output.applyUrl }}\"> APPLY NOW!!!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -496,
+        80
+      ],
+      "id": "d0722a80-325a-4320-8321-d057a79a0279",
+      "name": "Send a text message",
+      "webhookId": "db314e7b-7720-4bad-8d0e-d7c19ab90300",
+      "credentials": {
+        "telegramApi": {
+          "id": "uuDJtqUcZuZwSEvU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5f1111ea-55bd-4166-b537-903e5589c468",
+              "leftValue": "={{ $('If1').item.json.output.score }}",
+              "rightValue": 9,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -512,
+        448
+      ],
+      "id": "df41ac76-0767-408d-b642-4b1aa65b239e",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -2688,
+        592
+      ],
+      "id": "88df01ad-af8f-47e6-b8d7-80f73e65d45d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2800,
+        352
+      ],
+      "id": "3e38a183-b885-4eed-a154-64f2e0cf618d",
+      "name": "Telegram Trigger",
+      "webhookId": "44353062-e6a4-4af5-814b-67a6b82ed335",
+      "credentials": {
+        "telegramApi": {
+          "id": "uuDJtqUcZuZwSEvU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "actorId": {
+          "__rl": true,
+          "value": "MXLpngmVpE8WTESQr",
+          "mode": "list",
+          "cachedResultName": "🚀 Indeed jobs scraper [PPR] (borderline/indeed-scraper)",
+          "cachedResultUrl": "https://console.apify.com/actors/MXLpngmVpE8WTESQr/input"
+        },
+        "customBody": "{\n    \"country\": \"us\",\n    \"enableUniqueJobs\": false,\n    \"includeSimilarJobs\": false,\n    \"maxRows\": 3,\n    \"query\": \"Web Developmet\",\n    \"remote\": \"remote\"\n}"
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        -2208,
+        448
+      ],
+      "id": "5f31a2fa-2279-4010-b7b9-60a77cafebf5",
+      "name": "Run an Actor",
+      "credentials": {
+        "apifyApi": {
+          "id": "5LMHcpZKqoO3xow2",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1872,
+        656
+      ],
+      "id": "9f8bc883-1811-4b22-96c2-18910777b5c3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nCUEQu8GsIIJCBRF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"subject\": \"Cover Letter: [Job Title] - [Candidate Name]\",\n  \"cover_letter\": \"The full text of the cover letter with double newlines separating paragraphs.\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -800,
+        416
+      ],
+      "id": "232af1b7-84bd-4665-a937-53805c619a62",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1008,
+        400
+      ],
+      "id": "c34b8a8b-9a99-4c65-9569-d521ae1ada59",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nCUEQu8GsIIJCBRF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Run an Actor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get dataset items": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Run an Actor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run an Actor": {
+      "main": [
+        [
+          {
+            "node": "Get dataset items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f49fbe2a-f4b1-4cde-90a8-0d77e35cb237",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a20cdb781baf6fe7bc046a8be695448daa84cdc62ea5ea04b9e735fbdeff1d94"
+  },
+  "id": "VJARyIqlD4EXG1rg",
+  "tags": []
+}
